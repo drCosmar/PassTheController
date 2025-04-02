@@ -19,9 +19,34 @@ if not exist "C:\Program Files\PassTheController" mkdir "C:\Program Files\PassTh
 copy dist\PassTheController.exe "C:\Program Files\PassTheController\"
 copy icons\ptc64x64.ico "C:\Program Files\PassTheController\"
 
-:: Create Desktop shortcut
+:: Create Desktop shortcut with error checking
 echo Creating Desktop shortcut...
-powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('$env:USERPROFILE\Desktop\PassTheController.lnk'); $Shortcut.TargetPath = 'C:\Program Files\PassTheController\PassTheController.exe'; $Shortcut.IconLocation = 'C:\Program Files\PassTheController\ptc64x64.ico'; $Shortcut.Description = 'PassTheController v0.97b'; $Shortcut.Save()"
+set SHORTCUT_PATH=%USERPROFILE%\Desktop\PassTheController.lnk
+set TARGET_PATH=C:\Program Files\PassTheController\PassTheController.exe
+set ICON_PATH=C:\Program Files\PassTheController\ptc64x64.ico
+
+powershell -Command "$WshShell = New-Object -ComObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut('%SHORTCUT_PATH%'); $Shortcut.TargetPath = '%TARGET_PATH%'; $Shortcut.IconLocation = '%ICON_PATH%'; $Shortcut.Description = 'PassTheController v0.97b'; $Shortcut.Save()" 2>shortcut_error.log
+
+if %ERRORLEVEL% neq 0 (
+    echo PowerShell shortcut creation failed. See shortcut_error.log for details.
+    echo Falling back to VBScript method...
+    echo Set oWS = WScript.CreateObject("WScript.Shell") > create_shortcut.vbs
+    echo sLinkFile = "%SHORTCUT_PATH%" >> create_shortcut.vbs
+    echo Set oLink = oWS.CreateShortcut(sLinkFile) >> create_shortcut.vbs
+    echo oLink.TargetPath = "%TARGET_PATH%" >> create_shortcut.vbs
+    echo oLink.IconLocation = "%ICON_PATH%" >> create_shortcut.vbs
+    echo oLink.Description = "PassTheController v0.97b" >> create_shortcut.vbs
+    echo oLink.Save >> create_shortcut.vbs
+    cscript //nologo create_shortcut.vbs
+    del create_shortcut.vbs
+    if exist "%SHORTCUT_PATH%" (
+        echo Shortcut created successfully via VBScript.
+    ) else (
+        echo Failed to create shortcut. Check paths and permissions.
+    )
+) else (
+    echo Shortcut created successfully via PowerShell.
+)
 
 :: Create README and log
 cd C:\Program Files\PassTheController
@@ -41,5 +66,9 @@ echo Creating PassTheController.zip...
 powershell -Command "Compress-Archive -Path 'C:\Program Files\PassTheController\PassTheController.exe','C:\Program Files\PassTheController\README.txt','C:\Program Files\PassTheController\PassTheController.log','C:\Program Files\PassTheController\ptc64x64.ico' -DestinationPath 'C:\Users\Deikt\PassTheController\PassTheController.zip' -Force"
 
 echo Done! PassTheController.zip is ready in C:\Users\Deikt\PassTheController
-echo Shortcut created on Desktop.
+if exist "%SHORTCUT_PATH%" (
+    echo Shortcut created on Desktop.
+) else (
+    echo Shortcut creation failed - see shortcut_error.log or run manually.
+)
 pause
