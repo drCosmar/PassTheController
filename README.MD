@@ -17,18 +17,16 @@ PassTheController! syncs save states between your local Dolphin Emulator folder 
 
 ## Prerequisites
 - Python 3.10+ (for building from source).
-- Dolphin Emulator installed (save state path: "~/Documents/Dolphin Emulator/StateSaves/" on Windows, 
-  "~/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/StateSaves/" on Linux).
+- Dolphin Emulator installed (save state path: ~/Documents/Dolphin Emulator/StateSaves/ on Windows, ~/.var/app/org.DolphinEmu.dolphin-emu/data/dolphin-emu/StateSaves/ on Linux).
 - An FTP server (e.g., vsftpd) with port 21 open.
 
 ## Setup Instructions
 1. Clone the Repo:
-```
    git clone https://github.com/drCosmar/PassTheController.git
    cd PassTheController
-```
+
 2. Configure FTP Hosts:
-   - Open PassTheController.py in a text editor.
+   - Open source/PassTheController.py in a text editor.
    - Find the FTP_HOSTS list (initially empty):
      FTP_HOSTS = []
    - Add your FTP server addresses:
@@ -41,17 +39,25 @@ PassTheController! syncs save states between your local Dolphin Emulator folder 
 3. Install Dependencies:
    pip install pyinstaller
 
-4. Build the Executable (Windows):
-   - Windows:
-     - Right-click "installer.bat", 
+4. Build the Executable:
+   - Windows (Option 1 - Manual):
+     cd source
+     pyinstaller --onefile --noconsole --icon=icons/ptc64x64.ico --add-data "icons/ptc64x64.ico;." --name=PassTheController PassTheController.py
+   - Windows (Option 2 - Batch Script):
+     - Double-click build_and_package.bat (at repo root).
+     - Approve the admin prompt.
+     - Builds, installs to C:\Program Files\PassTheController\, creates a Desktop shortcut, and packages into PassTheController.zip.
    - Linux:
-                ***Work In Progress.***
-   - Output: dist/PassTheController (or .exe on Windows).
+     cd source
+     pyinstaller --onefile --icon=icons/ptc64x64.ico --add-data "icons/ptc64x64.ico:." --name=PassTheController PassTheController.py
+   - Output: source/dist/PassTheController (or .exe on Windows).
 
 5. Run It:
-   - Move the executable:
-     copy dist\PassTheController.exe .
-   - Double-click PassTheController.exe (Windows) or run ./PassTheController (Linux).
+   - If built manually:
+     copy source/dist/PassTheController.exe .
+     Double-click PassTheController.exe (Windows) or run ./PassTheController (Linux).
+   - If using build_and_package.bat:
+     Use the Desktop shortcut or C:\Program Files\PassTheController\PassTheController.exe.
    - First run: Enter your FTP username and password (saved to ~/.PassTheController!.json).
 
 6. FTP Server Setup:
@@ -69,12 +75,11 @@ PassTheController! syncs save states between your local Dolphin Emulator folder 
 - File > Game: Change game ID (currently only GZ2E01).
 - File > Channel: Switch or add channels (e.g., 1, 2).
 
-#### Note: For now only LoZ Twilight Princess is supported. Other games (That work with Dolphin emulator) will be supported in the future though!
-
 ## Notes
 - Save state path: ~/Documents/Dolphin Emulator/StateSaves/GZ2E01.s01 (Windows) or equivalent (Linux).
 - Check PassTheController.log for errors.
 - Active mode requires your client firewall to allow inbound connections (ports 1024–65535).
+- Windows install requires admin rights (handled by build_and_package.bat).
 
 ## License
 TBD by Dr.Cosmar.
