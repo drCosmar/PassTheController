@@ -1,5 +1,5 @@
 @echo off
-echo Attempting to Build and Install PassTheController v0.97b...
+echo Building and packaging PassTheController v0.97b...
 
 :: Check for admin rights and elevate if needed
 net session >nul 2>&1
@@ -11,13 +11,13 @@ if %ERRORLEVEL% neq 0 (
 
 :: Build the executable
 cd C:\Users\Deikt\PassTheController\source
-pyinstaller --onefile --noconsole --icon=ptc64x64.ico --add-data "ptc64x64.ico;." --name=PassTheController PassTheController.py
+pyinstaller --onefile --noconsole --icon=icons\ptc64x64.ico --add-data "icons\ptc64x64.ico;." --name=PassTheController PassTheController.py
 
 :: Create and populate Program Files folder
 echo Installing to C:\Program Files\PassTheController...
 if not exist "C:\Program Files\PassTheController" mkdir "C:\Program Files\PassTheController"
 copy dist\PassTheController.exe "C:\Program Files\PassTheController\"
-copy ptc64x64.ico "C:\Program Files\PassTheController\"
+copy icons\ptc64x64.ico "C:\Program Files\PassTheController\"
 
 :: Create Desktop shortcut
 echo Creating Desktop shortcut...
