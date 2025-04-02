@@ -43,9 +43,9 @@ PassTheController! syncs save states between your local Dolphin Emulator folder 
 
 4. Build the Executable (Windows):
    - Windows:
-     pyinstaller --onefile --icon=ptc64x64.ico --add-data "ptc64x64.ico;." --name=PassTheController PassTheController.py
+     - Right-click "installer.bat", 
    - Linux:
-     pyinstaller --onefile --icon=ptc64x64.ico --add-data "ptc64x64.ico:." --name=PassTheController PassTheController.py
+                ***Work In Progress.***
    - Output: dist/PassTheController (or .exe on Windows).
 
 5. Run It:
